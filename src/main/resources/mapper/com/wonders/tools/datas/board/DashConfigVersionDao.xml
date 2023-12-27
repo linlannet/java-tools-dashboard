@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.linlan.tools.board.dao.DashConfigVersionDao">
+
+    <!-- 采用别名使用类成员变量，可根据需求，确定是否启用 -->
+    <resultMap type="io.linlan.tools.board.entity.DashConfigVersion" id="dashConfigVersionMap">
+        <id property="id" column="VERSION_ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="appId" column="APP_ID"/>
+        <result property="name" column="NAME"/>
+        <result property="code" column="CODE"/>
+        <result property="status" column="STATUS"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="lastTime" column="LAST_TIME"/>
+        <result property="description" column="DESCRIPTION"/>
+        <!-- 新增外键的名称信息，用于展示使用 -->
+    </resultMap>
+
+    <!-- find by id，通过主键获取对象 -->
+    <select id="findById" resultMap="dashConfigVersionMap">
+        SELECT B.*
+        FROM DASH_CONFIG_VERSION B
+        WHERE VERSION_ID = #{value}
+    </select>
+
+    <!-- get list，通过输入的条件，获取返回的list列表对象
+    如果offset和limit不为空（Query对象传入），则采用相应的分页规则和commonList内的条件，
+        查询出相应记录并进行分页处理取出offset页的limit条记录
+    否则，根据commonList内的条件取出全部记录
+    全部列表的参数详见commonList内的各个条件说明
+    -->
+    <select id="getList" resultMap="dashConfigVersionMap">
+        SELECT B.*
+        FROM
+        <choose>
+            <when test="offset != null and limit != null">
+            (SELECT A.*, ROWNUM AS RN FROM
+                (SELECT * FROM
+                DASH_CONFIG_VERSION
+                WHERE 1 = 1
+                <include refid="commonList"></include>
+                <!-- 可以增加特定查询条件 -->
+                ${filterSql}
+                <choose>
+                  <when test='sidx != null and sidx.trim() != ""'>
+                ORDER BY ${sidx} ${order}
+                  </when>
+                  <otherwise>
+                ORDER BY VERSION_ID DESC
+                  </otherwise>
+                </choose>
+                ) A
+                <![CDATA[WHERE ROWNUM <= (#{offset} + #{limit}) ]]>
+            ) B
+            <![CDATA[WHERE RN > #{offset}]]>
+            </when>
+            <otherwise>
+                DASH_CONFIG_VERSION B
+                WHERE 1 = 1
+                <include refid="commonList"></include>
+                <!-- 可以增加特定查询条件 -->
+                <choose>
+                    <when test='sidx != null and sidx.trim() != ""'>
+                ORDER BY ${sidx} ${order}
+                    </when>
+                    <otherwise>
+                ORDER BY VERSION_ID DESC
+                    </otherwise>
+                </choose>
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- sql commonList 通过输入的条件，获取返回的list列表对象
+    -->
+    <sql id="commonList">
+        <if test='name != null and name.trim() !=""' > AND name = #{name}</if>
+    </sql>
+
+    <!-- save object，保存对象信息 -->
+    <insert id="save" parameterType="io.linlan.tools.board.entity.DashConfigVersion">
+        INSERT INTO DASH_CONFIG_VERSION
+        (
+        VERSION_ID, 
+        USER_ID, APP_ID, NAME, CODE, STATUS, CREATE_TIME, LAST_TIME, DESCRIPTION        )
+        VALUES
+        (
+        <choose>
+            <when test='id != null'>#{id},  </when>
+            <otherwise>  sys_guid() ,  </otherwise>
+        </choose>
+        #{userId}, #{appId, jdbcType=VARCHAR}, #{name}, #{code, jdbcType=VARCHAR}, #{status}, #{createTime}, #{lastTime}, #{description, jdbcType=VARCHAR}        )
+    </insert>
+
+    <!-- update object，更新对象信息 -->
+    <update id="update" parameterType="io.linlan.tools.board.entity.DashConfigVersion">
+        UPDATE DASH_CONFIG_VERSION
+        <set>
+            <if test="userId != null">USER_ID = #{userId}, </if>
+            <if test="appId != null">APP_ID = #{appId}, </if>
+            <if test="name != null">NAME = #{name}, </if>
+            <if test="code != null">CODE = #{code}, </if>
+            <if test="status != null">STATUS = #{status}, </if>
+            <if test="createTime != null">CREATE_TIME = #{createTime}, </if>
+            <if test="lastTime != null">LAST_TIME = #{lastTime}, </if>
+            <if test="description != null">DESCRIPTION = #{description}</if>
+        </set>
+        WHERE VERSION_ID = #{id}
+    </update>
+
+    <!-- delete by id，通过主键删除对象 -->
+    <delete id="deleteById">
+        DELETE FROM DASH_CONFIG_VERSION
+        WHERE VERSION_ID = #{value}
+    </delete>
+
+    <!-- delete by ids，通过主键数组批量删除对象 -->
+    <delete id="deleteByIds">
+        DELETE FROM DASH_CONFIG_VERSION
+        WHERE VERSION_ID IN
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- query total，通过输入的条件，查询返回结果的数量，返回值为int -->
+    <select id="queryTotal" resultType="int">
+        SELECT COUNT(*) FROM
+        DASH_CONFIG_VERSION B
+        WHERE 1 = 1
+        <include refid="commonList"></include>
+        <!-- 可以增加查询条件 -->
+        ${filterSql}
+    </select>
+
+    <!-- 以下为新增特定的操作 -->
+    <!-- find by id，通过主键获取对象 -->
+    <select id="getByName" resultMap="dashConfigVersionMap">
+        SELECT B.*
+        FROM DASH_CONFIG_VERSION B
+        WHERE NAME = #{name}
+    </select>
+
+
+</mapper>

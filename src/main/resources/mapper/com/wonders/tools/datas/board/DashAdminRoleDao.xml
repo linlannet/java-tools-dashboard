@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="io.linlan.tools.board.dao.DashAdminRoleDao">
+
+    <resultMap type="io.linlan.tools.board.entity.DashAdminRole" id="dashAdminRoleMap">
+        <id property="id" column="ROLE_ID"/>
+        <result property="roletypeId" column="ROLETYPE_ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="name" column="NAME"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="lastTime" column="LAST_TIME"/>
+        <result property="description" column="DESCRIPTION"/>
+    </resultMap>
+
+    <select id="findById" resultMap="dashAdminRoleMap">
+        SELECT B.*
+        FROM DASH_ADMIN_ROLE B
+        WHERE ROLE_ID = #{value}
+    </select>
+
+    <select id="getList" resultMap="dashAdminRoleMap">
+        SELECT B.*
+        FROM
+        <choose>
+            <when test="offset != null and limit != null">
+            (SELECT A.*, ROWNUM AS RN FROM
+                (SELECT * FROM
+                DASH_ADMIN_ROLE
+                WHERE 1 = 1
+                <include refid="commonList"></include>
+                ${filterSql}
+                <choose>
+                  <when test="sidx != null and sidx.trim() != ''">
+                ORDER BY ${sidx} ${order}
+                  </when>
+                  <otherwise>
+                ORDER BY ROLE_ID DESC
+                  </otherwise>
+                </choose>
+                ) A
+                <![CDATA[WHERE ROWNUM <= (#{offset} + #{limit}) ]]>
+            ) B
+            <![CDATA[WHERE RN > #{offset}]]>
+            </when>
+            <otherwise>
+                DASH_ADMIN_ROLE B
+                WHERE 1 = 1
+                <include refid="commonList"></include>
+                <choose>
+                    <when test="sidx != null and sidx.trim() != ''">
+                ORDER BY ${sidx} ${order}
+                    </when>
+                    <otherwise>
+                ORDER BY ROLE_ID DESC
+                    </otherwise>
+                </choose>
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- sql commonList 通过输入的条件，获取返回的list列表对象
+    -->
+    <sql id="commonList">
+        <if test='name != null and name.trim() !=""' > AND name = #{name}</if>
+    </sql>
+
+    <insert id="save" parameterType="io.linlan.tools.board.entity.DashAdminRole">
+        INSERT INTO DASH_ADMIN_ROLE
+        (
+        ROLE_ID, ROLETYPE_ID, USER_ID, NAME, CREATE_TIME, LAST_TIME, DESCRIPTION        )
+        VALUES
+        (
+        <choose>
+            <when test='id != null'>#{id},  </when>
+            <otherwise>  sys_guid() ,  </otherwise>
+        </choose>
+        #{roletypeId, jdbcType=VARCHAR}, #{userId}, #{name}, #{createTime}, #{lastTime}, #{description, jdbcType=VARCHAR}        )
+    </insert>
+
+    <update id="update" parameterType="io.linlan.tools.board.entity.DashAdminRole">
+        UPDATE DASH_ADMIN_ROLE
+        <set>
+            <if test="roletypeId != null">ROLETYPE_ID = #{roletypeId}, </if>
+            <if test="userId != null">USER_ID = #{userId}, </if>
+            <if test="name != null">NAME = #{name}, </if>
+            <if test="createTime != null">CREATE_TIME = #{createTime}, </if>
+            <if test="lastTime != null">LAST_TIME = #{lastTime}, </if>
+            <if test="description != null">DESCRIPTION = #{description}</if>
+        </set>
+        WHERE ROLE_ID = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM DASH_ADMIN_ROLE
+        WHERE ROLE_ID = #{value}
+    </delete>
+
+    <delete id="deleteByIds">
+        DELETE FROM DASH_ADMIN_ROLE
+        WHERE ROLE_ID IN
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="queryTotal" resultType="int">
+        SELECT COUNT(*) FROM
+        DASH_ADMIN_ROLE
+        WHERE 1 = 1
+        <include refid="commonList"></include>
+        ${filterSql}
+    </select>
+
+    <select id="getRoleResList" resultType="io.linlan.tools.board.entity.DashAdminRoleRes">
+        SELECT DARR.roleres_id id,DARR.role_id roleId,DARR.res_id resId,DARR.res_type resType,DARR.permission permission
+        FROM DASH_ADMIN_ROLE_RES DARR
+    </select>
+
+    <insert id="saveRoleRes" parameterType="io.linlan.tools.board.entity.DashAdminRoleRes">
+        <![CDATA[
+        insert into DASH_ADMIN_ROLE_RES (roleres_id, res_id, role_id,res_type,permission)
+        values (#{id}, #{resId}, #{roleId} ,#{resType},#{permission})
+        ]]>
+    </insert>
+
+    <delete id="deleteRoleRes">
+        delete from DASH_ADMIN_ROLE_RES where role_id = #{arg0}
+    </delete>
+
+    <delete id="deleteRoleResByResId">
+        delete from DASH_ADMIN_ROLE_RES where res_id = #{arg0} and res_type = #{arg1}
+    </delete>
+
+    <select id="getUserRoleResList" resultType="io.linlan.tools.board.entity.DashAdminRoleRes">
+        select rr.roleres_id roleResId,rr.role_id roleId,rr.res_id resId,rr.res_type resType,rr.permission permission
+        FROM DASH_ADMIN_USER_ROLE ur
+        LEFT JOIN DASH_ADMIN_ROLE_RES rr
+        ON ur.role_id = rr.role_id
+        WHERE ur.user_id = #{arg0} AND rr.res_type = #{arg1}
+    </select>
+
+</mapper>
