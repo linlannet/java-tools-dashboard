@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.linlan.tools.board.dao.DashOperationJobDao">
+
+    <!-- 采用别名使用类成员变量，可根据需求，确定是否启用 -->
+    <resultMap type="io.linlan.tools.board.entity.DashOperationJob" id="dashOperationJobMap">
+        <id property="id" column="JOB_ID"/>
+        <result property="appId" column="APP_ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="name" column="JOB_NAME"/>
+        <result property="cronExp" column="CRON_EXP"/>
+        <result property="startDate" column="START_DATE"/>
+        <result property="endDate" column="END_DATE"/>
+        <result property="jobType" column="JOB_TYPE"/>
+        <result property="config" column="JOB_CONFIG"/>
+        <result property="jobStatus" column="JOB_STATUS"/>
+        <result property="lastExecTime" column="LAST_EXEC_TIME"/>
+        <result property="execLog" column="EXEC_LOG"/>
+        <result property="spare1" column="SPARE1"/>
+        <result property="spare2" column="SPARE2"/>
+        <!-- 新增外键的名称信息，用于展示使用 -->
+    </resultMap>
+
+    <!-- find by id，通过主键获取对象 -->
+    <select id="findById" resultMap="dashOperationJobMap">
+        SELECT B.*
+        , (select u.username from DASH_ADMIN_USER u where u.user_id = B.user_id) as username
+        FROM DASH_OPERATION_JOB B
+        WHERE JOB_ID = #{value}
+    </select>
+
+    <!-- get list，通过输入的条件，获取返回的list列表对象
+    如果offset和limit不为空（Query对象传入），则采用相应的分页规则和commonList内的条件，
+        查询出相应记录并进行分页处理取出offset页的limit条记录
+    否则，根据commonList内的条件取出全部记录
+    全部列表的参数详见commonList内的各个条件说明
+    -->
+    <select id="getList" resultMap="dashOperationJobMap">
+        SELECT B.*
+        , (select u.username from DASH_ADMIN_USER u where u.user_id = B.user_id) as username
+        FROM DASH_OPERATION_JOB B
+        <if test="userId != null" >
+            WHERE #{userId} = '${admin_user_id}'
+            OR B.user_id = #{userId}
+            OR B.job_id IN (
+            SELECT res_id
+            FROM DASH_ADMIN_USER_ROLE ur
+            LEFT JOIN DASH_ADMIN_ROLE_RES rr ON ur.role_id = rr.role_id
+            WHERE ur.user_id = #{userId} AND rr.res_type = 'job'
+            )
+        </if>
+        <if test="adminId != null">
+            WHERE #{adminId} = '${admin_user_id}'
+            OR user_id = #{adminId}
+            OR B.job_id IN (
+            SELECT res_id
+            FROM DASH_ADMIN_ROLE r
+            JOIN DASH_ADMIN_ROLE_RES rr ON r.role_id = rr.role_id
+            WHERE r.user_id = #{adminId} AND rr.res_type = 'job'
+            )
+        </if>
+        ORDER BY B.job_id DESC
+    </select>
+
+    <!-- sql commonList 通过输入的条件，获取返回的list列表对象
+    -->
+    <sql id="commonList">
+
+    </sql>
+
+    <!-- save object，保存对象信息 -->
+    <insert id="save" parameterType="io.linlan.tools.board.entity.DashOperationJob">
+        INSERT INTO DASH_OPERATION_JOB
+        (
+        JOB_ID, 
+        APP_ID, USER_ID, JOB_NAME, CRON_EXP, START_DATE, END_DATE, JOB_TYPE, JOB_CONFIG, JOB_STATUS, LAST_EXEC_TIME, EXEC_LOG, SPARE1, SPARE2        )
+        VALUES
+        (
+        <choose>
+            <when test='id != null'>#{id},  </when>
+            <otherwise>  S_DASH_OPERATION_JOB.NEXTVAL ,  </otherwise>
+        </choose>
+        #{appId, jdbcType=VARCHAR}, #{userId}, #{jobName}, #{cronExp}, #{startDate}, #{endDate}, #{jobType, jdbcType=VARCHAR}, #{jobConfig}, #{jobStatus, jdbcType=VARCHAR}, #{lastExecTime}, #{execLog, jdbcType=VARCHAR}, #{spare1, jdbcType=VARCHAR}, #{spare2, jdbcType=VARCHAR}        )
+    </insert>
+
+    <!-- update object，更新对象信息 -->
+    <update id="update" parameterType="io.linlan.tools.board.entity.DashOperationJob">
+        UPDATE DASH_OPERATION_JOB
+        <set>
+            <if test="appId != null">APP_ID = #{appId}, </if>
+            <if test="userId != null">USER_ID = #{userId}, </if>
+            <if test="jobName != null">JOB_NAME = #{jobName}, </if>
+            <if test="cronExp != null">CRON_EXP = #{cronExp}, </if>
+            <if test="startDate != null">START_DATE = #{startDate}, </if>
+            <if test="endDate != null">END_DATE = #{endDate}, </if>
+            <if test="jobType != null">JOB_TYPE = #{jobType}, </if>
+            <if test="jobConfig != null">JOB_CONFIG = #{jobConfig}, </if>
+            <if test="jobStatus != null">JOB_STATUS = #{jobStatus}, </if>
+            <if test="lastExecTime != null">LAST_EXEC_TIME = #{lastExecTime}, </if>
+            <if test="execLog != null">EXEC_LOG = #{execLog}, </if>
+            <if test="spare1 != null">SPARE1 = #{spare1}, </if>
+            <if test="spare2 != null">SPARE2 = #{spare2}</if>
+        </set>
+        WHERE JOB_ID = #{id}
+    </update>
+
+    <!-- delete by id，通过主键删除对象 -->
+    <delete id="deleteById">
+        DELETE FROM DASH_OPERATION_JOB
+        WHERE JOB_ID = #{value}
+    </delete>
+
+    <!-- delete by ids，通过主键数组批量删除对象 -->
+    <delete id="deleteByIds">
+        DELETE FROM DASH_OPERATION_JOB
+        WHERE JOB_ID IN
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- query total，通过输入的条件，查询返回结果的数量，返回值为int -->
+    <select id="getCount" resultType="int">
+        SELECT COUNT(*) FROM
+        DASH_OPERATION_JOB B
+        WHERE 1 = 1
+        <include refid="commonList"></include>
+        <!-- 可以增加查询条件 -->
+        ${filterSql}
+    </select>
+
+    <!-- 以下为新增特定的操作 -->
+    <update id="updateLastExecTime">
+        <![CDATA[
+        UPDATE DASH_OPERATION_JOB SET last_exec_time = #{arg1} WHERE job_id = #{arg0}
+        ]]>
+    </update>
+    <update id="updateStatus">
+        <![CDATA[
+        UPDATE DASH_OPERATION_JOB SET job_status = #{arg1},exec_log = #{arg2} WHERE job_id = #{arg0}
+        ]]>
+    </update>
+
+    <select id="checkJobRole" resultType="int">
+        SELECT count(1) FROM DASH_OPERATION_JOB WHERE job_id = #{arg1}
+        and (#{arg0} = '${admin_user_id}' OR user_id = #{arg0} OR job_id IN
+            (SELECT res_id FROM DASH_ADMIN_USER_ROLE ur
+            LEFT JOIN DASH_ADMIN_ROLE_RES rr ON ur.role_id = rr.role_id
+            WHERE ur.user_id = #{arg0} AND rr.res_type = 'job' AND rr.permission LIKE #{arg2}
+            )
+        )
+    </select>
+
+</mapper>

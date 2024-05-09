@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="io.linlan.tools.board.dao.DashDatasourceDao">
+
+    <resultMap type="io.linlan.tools.board.entity.DashDatasource" id="dashDatasourceMap">
+        <id property="id" column="DATASOURCE_ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="appId" column="APP_ID"/>
+        <result property="name" column="NAME"/>
+        <result property="type" column="TYPE"/>
+        <result property="content" column="CONTENT"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="lastTime" column="LAST_TIME"/>
+        <result property="realName" column="realName"/>
+        <result property="username" column="username"/>
+    </resultMap>
+
+    <select id="findById" resultMap="dashDatasourceMap">
+        SELECT * FROM DASH_DATASOURCE
+        WHERE DATASOURCE_ID = #{value}
+    </select>
+
+    <select id="getList" resultMap="dashDatasourceMap">
+        SELECT
+            B.*,
+            u.name   AS realName,
+            u.username  AS username
+        FROM DASH_DATASOURCE B
+        LEFT JOIN DASH_ADMIN_USER u ON u.user_id = B.user_id
+        <if test="userId != null" >
+            WHERE #{userId} = '${admin_user_id}'
+            OR B.user_id = #{userId}
+            OR datasource_id IN (
+            SELECT res_id
+            FROM DASH_ADMIN_USER_ROLE ur
+            LEFT JOIN DASH_ADMIN_ROLE_RES rr ON ur.role_id = rr.role_id
+            WHERE ur.user_id = #{userId} AND rr.res_type = 'datasource'
+            )
+        </if>
+        <if test="adminId != null">
+            WHERE #{adminId} = '${admin_user_id}'
+            OR B.user_id = #{adminId}
+            OR datasource_id IN (
+            SELECT res_id
+            FROM DASH_ADMIN_ROLE r
+            LEFT JOIN DASH_ADMIN_ROLE_RES rr ON r.role_id = rr.role_id
+            WHERE r.user_id = #{adminId} AND rr.res_type = 'datasource'
+            )
+        </if>
+        ORDER BY B.name
+    </select>
+
+    <!-- sql commonList 通过输入的条件，获取返回的list列表对象
+-->
+    <sql id="commonList">
+        <if test='datasourceId != null and datasourceId.trim() != ""' >
+            <![CDATA[
+            and datasource_id <> #{datasourceId}
+            ]]>
+        </if>
+        <if test='name != null and name.trim() !=""' > AND name = #{name}</if>
+    </sql>
+
+    <insert id="save" parameterType="io.linlan.tools.board.entity.DashDatasource">
+        INSERT INTO DASH_DATASOURCE
+        (
+        DATASOURCE_ID, USER_ID, NAME, TYPE, APP_ID, CONTENT, CREATE_TIME, LAST_TIME        )
+        VALUES
+        (
+        <choose>
+            <when test='id != null'>#{id},  </when>
+            <otherwise>  sys_guid(),  </otherwise>
+        </choose>
+        #{userId}, #{name}, #{type}, #{appId, jdbcType=VARCHAR}, #{content}, #{createTime}, #{lastTime}       )
+    </insert>
+
+    <update id="update" parameterType="io.linlan.tools.board.entity.DashDatasource">
+        UPDATE DASH_DATASOURCE
+        <set>
+            <if test="userId != null">USER_ID = #{userId}, </if>
+            <if test="name != null">NAME = #{name}, </if>
+            <if test="appId != null">APP_ID = #{appId}, </if>
+            <if test="type != null">TYPE = #{type}, </if>
+            <if test="content != null">CONTENT = #{content}, </if>
+            <if test="createTime != null">CREATE_TIME = #{createTime}, </if>
+            <if test="lastTime != null">LAST_TIME = #{lastTime}</if>
+        </set>
+        WHERE DATASOURCE_ID = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM DASH_DATASOURCE
+        WHERE DATASOURCE_ID = #{value}
+    </delete>
+
+    <delete id="deleteByIds">
+        DELETE FROM DASH_DATASOURCE
+        WHERE DATASOURCE_ID IN
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getCount" resultType="int">
+        SELECT COUNT(*) FROM
+        DASH_DATASOURCE
+        WHERE 1 = 1
+        <include refid="commonList"></include>
+        ${filterSql}
+    </select>
+
+    <select id="checkDatasourceRole" resultType="int">
+        SELECT count(1) FROM DASH_DATASOURCE
+        WHERE datasource_id = #{arg1} and
+        (#{arg0} = '${admin_user_id}' OR user_id = #{arg0} OR datasource_id IN
+            (SELECT res_id FROM DASH_ADMIN_USER_ROLE ur
+            LEFT JOIN DASH_ADMIN_ROLE_RES rr ON ur.role_id = rr.role_id
+            WHERE ur.user_id = #{arg0} AND rr.res_type = 'datasource' AND rr.permission LIKE #{arg2}
+            )
+        )
+    </select>
+</mapper>
