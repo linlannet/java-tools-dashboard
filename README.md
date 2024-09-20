@@ -14,6 +14,7 @@ JAVA代码数据驾驶舱应用，可通过JDBC、SOLR、ELASTIC等数据源，�
 ## 版本历史
 
 ```
+2.3.1       2024-09-20  增加数据库包含注释版本的脚本，目标调整为sql
 2.3.0       2023-12-27  独立版本表名称修改为DASH_前缀
                         solr资源移动到dashboard内，solr版本升级为8.2.0
                         调整引用的基础包信息及版本，完善和规范化调整README.md文件
@@ -51,8 +52,8 @@ JAVA代码数据驾驶舱应用，可通过JDBC、SOLR、ELASTIC等数据源，�
 
 ## DB-Change
 ![数据表总览](./.img/db_view.png "数据表总览")
-[建库脚本](./config/create_db.sql)
-[插入用户和目录配置信息](./config/initial.sql)
+[建库脚本](sql/create_db.sql)
+[插入用户和目录配置信息](sql/initial.sql)
 ```
 
 2023-12-27  表名称和类对象规范化调整
@@ -84,8 +85,8 @@ JAVA代码数据驾驶舱应用，可通过JDBC、SOLR、ELASTIC等数据源，�
 
 ### 安装教程
 1. 下载代码
-2. 在mysql8.0内运行 [建库脚本](./config/create_db.sql)
-3. 在mysql8内初始化数据 [插入用户和目录配置信息](./config/initial.sql)
+2. 在mysql8.0内运行 [建库脚本](sql/create_db.sql)
+3. 在mysql8内初始化数据 [插入用户和目录配置信息](sql/initial.sql)
 4. 使用Myeclipse或IDEA InterliJ工具，添加tomcat服务，配置服务参数，启动后进入登录页
 
 ## 应用效果
