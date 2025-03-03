@@ -37,7 +37,7 @@
         <security:authentication-provider ref="shareAuthenticationProviderDecorator"/>
     </security:authentication-manager>
 
-    <bean id="shareAuthenticationProviderDecorator" class="io.linlan.tools.security.service.ShareAuthenticationProviderDecorator">
+    <bean id="shareAuthenticationProviderDecorator" class="net.linlan.tools.security.service.ShareAuthenticationProviderDecorator">
         <property name="authenticationProvider" ref="casAuthenticationProvider"/>
     </bean>
 
@@ -83,7 +83,7 @@
 
     <!-- authorities对应 CAS server的 登录属性， 在此设置到spirng security中，用于spring security的验证 -->
     <bean id="authenticationUserDetailsService"
-          class="io.linlan.tools.security.service.UserDetailsService">
+          class="net.linlan.tools.security.service.UserDetailsService">
         <constructor-arg>
             <array>
                 <value>name</value>
@@ -107,5 +107,5 @@
         <property name="filterProcessesUrl" value="/j_spring_cas_security_logout"/>
     </bean>
 
-    <bean id="casAuthenticationService" class="io.linlan.tools.security.service.DefaultAuthenticationService"/>
+    <bean id="casAuthenticationService" class="net.linlan.tools.security.service.DefaultAuthenticationService"/>
 </beans>

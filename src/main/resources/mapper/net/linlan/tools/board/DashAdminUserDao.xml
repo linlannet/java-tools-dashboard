@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.linlan.tools.board.dao.DashAdminUserDao">
+
+    <!-- 采用别名使用类成员变量，可根据需求，确定是否启用 -->
+    <resultMap type="net.linlan.tools.board.entity.DashAdminUser" id="dashAdminUserMap">
+        <id property="id" column="USER_ID"/>
+        <result property="username" column="USERNAME"/>
+        <result property="name" column="NAME"/>
+        <result property="password" column="PASSWORD"/>
+        <result property="salt" column="SALT"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="status" column="STATUS"/>
+        <!-- 新增外键的名称信息，用于展示使用 -->
+    </resultMap>
+
+    <!-- find by id，通过主键获取对象 -->
+    <select id="findById" resultMap="dashAdminUserMap">
+        SELECT B.*
+        FROM DASH_ADMIN_USER B
+        WHERE USER_ID = #{value}
+    </select>
+
+    <!-- get list，通过输入的条件，获取返回的list列表对象
+    如果offset和limit不为空（Query对象传入），则采用相应的分页规则和commonList内的条件，
+        查询出相应记录并进行分页处理取出offset页的limit条记录
+    否则，根据commonList内的条件取出全部记录
+    全部列表的参数详见commonList内的各个条件说明
+    -->
+    <select id="getList" resultMap="dashAdminUserMap">
+        SELECT B.*
+        FROM
+        <choose>
+            <when test="offset != null and limit != null">
+            (SELECT A.*, ROWNUM AS RN FROM
+                (SELECT * FROM
+                DASH_ADMIN_USER
+                WHERE 1 = 1
+                <include refid="commonList"></include>
+                <!-- 可以增加特定查询条件 -->
+                ${filterSql}
+                <choose>
+                    <when test='sidx != null and sidx.trim() != ""'>
+                        ORDER BY ${sidx} ${order}
+                    </when>
+                    <otherwise>
+                        ORDER BY USER_ID DESC
+                    </otherwise>
+                </choose>
+                ) A
+                <![CDATA[WHERE ROWNUM <= (#{offset} + #{limit}) ]]>
+            ) B
+            <![CDATA[WHERE RN > #{offset}]]>
+            </when>
+            <otherwise>
+                DASH_ADMIN_USER B
+                WHERE 1 = 1
+                <include refid="commonList"></include>
+                <!-- 可以增加特定查询条件 -->
+                <choose>
+                    <when test='sidx != null and sidx.trim() != ""'>
+                        ORDER BY ${sidx} ${order}
+                    </when>
+                    <otherwise>
+                        ORDER BY USER_ID DESC
+                    </otherwise>
+                </choose>
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- sql commonList 通过输入的条件，获取返回的list列表对象
+    -->
+    <sql id="commonList">
+        <if test='name != null and name.trim() !=""' > AND name = #{name}</if>
+        <if test='username != null and username.trim() !=""' > AND username = #{username}</if>
+    </sql>
+
+    <!-- save object，保存对象信息 -->
+    <insert id="save" parameterType="net.linlan.tools.board.entity.DashAdminUser">
+        INSERT INTO DASH_ADMIN_USER
+        (
+        USER_ID,
+        USERNAME, NAME, PASSWORD, SALT, CREATE_TIME, STATUS        )
+        VALUES
+        (
+        <choose>
+            <when test='id != null'>#{id},  </when>
+            <otherwise>  sys_guid() ,  </otherwise>
+        </choose>
+        #{username}, #{name, jdbcType=VARCHAR}, #{password}, #{salt, jdbcType=VARCHAR}, #{createTime}, #{status}        )
+    </insert>
+
+    <!-- update object，更新对象信息 -->
+    <update id="update" parameterType="net.linlan.tools.board.entity.DashAdminUser">
+        UPDATE DASH_ADMIN_USER
+        <set>
+            <if test="username != null">USERNAME = #{username}, </if>
+            <if test="name != null">NAME = #{name}, </if>
+            <if test="password != null">PASSWORD = #{password}, </if>
+            <if test="salt != null">SALT = #{salt}, </if>
+            <if test="createTime != null">CREATE_TIME = #{createTime}, </if>
+            <if test="status != null">STATUS = #{status}</if>
+        </set>
+        WHERE USER_ID = #{id}
+    </update>
+
+    <!-- delete by id，通过主键删除对象 -->
+    <delete id="deleteById">
+        DELETE FROM DASH_ADMIN_USER
+        WHERE USER_ID = #{value}
+    </delete>
+
+    <!-- delete by ids，通过主键数组批量删除对象 -->
+    <delete id="deleteByIds">
+        DELETE FROM DASH_ADMIN_USER
+        WHERE USER_ID IN
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- query total，通过输入的条件，查询返回结果的数量，返回值为int -->
+    <select id="getCount" resultType="int">
+        SELECT COUNT(*) FROM
+        DASH_ADMIN_USER B
+        WHERE 1 = 1
+        <include refid="commonList"></include>
+        <!-- 可以增加查询条件 -->
+        ${filterSql}
+    </select>
+
+    <!-- 以下为新增特定的操作 -->
+    <delete id="deleteUserById" parameterType="Map">
+        DELETE FROM DASH_ADMIN_USER WHERE user_id = #{userId}
+    </delete>
+    <delete id="deleteUserRole" parameterType="Map">
+        DELETE FROM DASH_ADMIN_ROLE
+         WHERE user_id = #{objUid}
+        <if test="curUid != adminUserId">
+            AND role_id IN (SELECT role_id FROM DASH_ADMIN_ROLE WHERE user_id = #{curUid})
+        </if>
+    </delete>
+
+    <delete id="deleteUserRoles" parameterType="Map">
+        DELETE FROM DASH_ADMIN_USER_ROLE
+        WHERE user_id IN
+        <foreach item="item" index="index" collection="userIds" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="curUid != adminUserId">
+            AND role_id IN (select role_id from DASH_ADMIN_ROLE where user_id = #{curUid} and role_id in
+            <foreach item="item" index="index" collection="roleIds" open="(" separator="," close=")">
+            #{item}
+            </foreach>)
+        </if>
+        <if test="curUid == adminUserId">
+            AND role_id IN
+            <foreach item="item" index="index" collection="roleIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </delete>
+
+    <insert id="saveUserRole" parameterType="java.util.List">
+        insert into DASH_ADMIN_USER_ROLE
+        (userrole_id, user_id, role_id)
+        values
+        <foreach collection="list" item="ur" index="index" separator=",">
+            (#{ur.id}, #{ur.userId}, #{ur.roleId})
+        </foreach>
+    </insert>
+
+    <select id="getUserRoleList" resultType="net.linlan.tools.board.entity.DashAdminUserRole">
+        SELECT user_id userId,role_id roleId
+        FROM DASH_ADMIN_USER_ROLE
+    </select>
+
+    <select id="getByUsername" resultType="net.linlan.tools.board.entity.DashAdminUser">
+        SELECT user_id userId,username username,name name,status status
+        FROM DASH_ADMIN_USER where username = #{arg0}
+    </select>
+
+    <insert id="saveNewUser" >
+        INSERT INTO DASH_ADMIN_USER (user_id, username, name)
+        SELECT a.*
+        FROM (SELECT #{arg0} AS uid, #{arg1} AS username, #{arg2} AS name) a
+        LEFT JOIN (SELECT user_id AS uid FROM DASH_ADMIN_USER WHERE user_id=#{arg0}) b ON a.uid = b.uid
+        WHERE b.uid IS NULL
+    </insert>
+
+    <update id="updatePassword">
+        <![CDATA[
+        update DASH_ADMIN_USER set password = #{arg2} where user_id = #{arg0} and password = #{arg1}
+        ]]>
+    </update>
+
+    <delete id="deleteUserRoleByRoleId">
+        delete from DASH_ADMIN_ROLE where role_id = #{arg0}
+    </delete>
+
+</mapper>

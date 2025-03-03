@@ -14,6 +14,8 @@ JAVA代码数据驾驶舱应用，可通过JDBC、SOLR、ELASTIC等数据源，�
 ## 版本历史
 
 ```
+2.3.2       2025-03-03  调整资源的路径从io.linlan调整为net.linlan
+
 2.3.1       2024-09-20  增加数据库包含注释版本的脚本，目标调整为sql
 2.3.0       2023-12-27  独立版本表名称修改为DASH_前缀
                         solr资源移动到dashboard内，solr版本升级为8.2.0
@@ -101,7 +103,7 @@ JAVA代码数据驾驶舱应用，可通过JDBC、SOLR、ELASTIC等数据源，�
 3.  提交代码
 ```
 git config user.name linlaninfo
-git config user.email linlanio@qq.com
+git config user.email linlannet@163.com
 ```
 4. 新建 Pull Request
 5. 创建和提交tag
@@ -119,6 +121,6 @@ git tag -d v2.3.0
 
 ## 联系我们
 ```
-网站：https://www.linlan.io
-邮箱：contact@linlan.io
+网站：https://www.linlan.net
+邮箱：linlannet@163.com
 ```

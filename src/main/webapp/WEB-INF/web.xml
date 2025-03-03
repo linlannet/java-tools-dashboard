@@ -57,7 +57,7 @@
 
     <filter>
         <filter-name>LocalSecurityFilter</filter-name>
-        <filter-class>io.linlan.tools.security.service.LocalSecurityFilter</filter-class>
+        <filter-class>net.linlan.tools.security.service.LocalSecurityFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>LocalSecurityFilter</filter-name>
@@ -98,7 +98,7 @@
         </init-param>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>io.linlan.config.WebConfig</param-value>
+            <param-value>net.linlan.config.WebConfig</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>

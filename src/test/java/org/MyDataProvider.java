@@ -1,8 +1,8 @@
 package org;
 
-import io.linlan.tools.data.provider.DataProvider;
-import io.linlan.commons.db.annotation.DataQueryParameter;
-import io.linlan.commons.db.annotation.DataSourceParameter;
+import net.linlan.tools.data.provider.DataProvider;
+import net.linlan.commons.db.annotation.DataQueryParameter;
+import net.linlan.commons.db.annotation.DataSourceParameter;
 
 // uncomment to active MyDataProvider example
 //@DataProviderName(name = "MyDataProvider")

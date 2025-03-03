@@ -19,7 +19,7 @@
     </bean>
 
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="io.linlan.tools.board.dao"/>
+        <property name="basePackage" value="net.linlan.tools.board.dao"/>
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
     </bean>
 
@@ -34,7 +34,7 @@
     <bean id="druid-stat-pointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut" scope="prototype">
         <property name="patterns">
             <list>
-                <value>io.linlan.tools.board.dao.*</value>
+                <value>net.linlan.tools.board.dao.*</value>
             </list>
         </property>
     </bean>

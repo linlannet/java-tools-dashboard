@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.linlan.tools.board.dao.DashMenuDao">
+
+    <select id="getMenuIdByUserRole" resultType="java.lang.Long">
+        SELECT DISTINCT rr.res_id AS roleResId 
+          FROM DASH_ADMIN_USER_ROLE ur
+          LEFT JOIN DASH_ADMIN_ROLE_RES rr ON ur.role_id = rr.role_id
+         WHERE ur.user_id = #{arg0} AND rr.res_type = 'menu'
+    </select>
+
+    <select id="getMenuIdByRoleAdmin" resultType="java.lang.Long">
+        SELECT DISTINCT rr.res_id AS roleResId
+        FROM DASH_ADMIN_ROLE r
+        LEFT JOIN DASH_ADMIN_ROLE_RES rr ON r.role_id = rr.role_id
+        WHERE r.user_id = #{arg0} AND rr.res_type = 'menu'
+    </select>
+
+</mapper>

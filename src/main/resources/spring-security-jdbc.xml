@@ -34,7 +34,7 @@
         <security:authentication-provider ref="shareAuthenticationProviderDecorator"/>
     </security:authentication-manager>
 
-    <bean id="shareAuthenticationProviderDecorator" class="io.linlan.tools.security.service.ShareAuthenticationProviderDecorator">
+    <bean id="shareAuthenticationProviderDecorator" class="net.linlan.tools.security.service.ShareAuthenticationProviderDecorator">
         <property name="authenticationProvider" ref="daoAuthenticationProvider"/>
     </bean>
 
@@ -49,7 +49,7 @@
     </bean>
 
     <bean id="userDetailsService"
-          class="io.linlan.tools.security.service.DbUserDetailService">
+          class="net.linlan.tools.security.service.DbUserDetailService">
         <property name="dataSource" ref="dataSource">
         </property>
         <property name="authoritiesByUsernameQuery">
@@ -73,6 +73,6 @@
           class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
 
     <bean id="dbAuthenticationService"
-          class="io.linlan.tools.security.service.DefaultAuthenticationService"/>
+          class="net.linlan.tools.security.service.DefaultAuthenticationService"/>
 
 </beans>
