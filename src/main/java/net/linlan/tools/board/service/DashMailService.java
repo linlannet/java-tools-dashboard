@@ -1,6 +1,6 @@
 package net.linlan.tools.board.service;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import net.linlan.tools.board.entity.DashOperationJob;
 import net.linlan.tools.board.service.persist.PersistContext;
 import net.linlan.tools.board.service.persist.excel.XlsProcessorService;
@@ -10,7 +10,6 @@ import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import net.linlan.commons.script.json.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +78,7 @@ public class DashMailService {
     }
 
     public String sendDashboard(DashOperationJob job) throws Exception {
-        JSONObject config = JsonUtils.parseJO(job.getConfig());
+        JSONObject config = JSONObject.parseObject(job.getConfig());
 
         List<PersistContext> persistContextList = config.getJSONArray("boards").stream()
                 .map(e -> dataPersistService.persist(((JSONObject) e).getString("id"), job.getUserId().toString()))

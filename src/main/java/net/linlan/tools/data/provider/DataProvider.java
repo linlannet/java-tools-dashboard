@@ -1,6 +1,7 @@
 package net.linlan.tools.data.provider;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
 import com.googlecode.aviator.AviatorEvaluator;
@@ -168,8 +169,8 @@ public abstract class DataProvider {
     }
 
     public String getLockKey() {
-        String dataSourceStr = JSONObject.toJSON(dataSource).toString();
-        String queryStr = JSONObject.toJSON(query).toString();
+        String dataSourceStr = JSON.toJSON(dataSource).toString();
+        String queryStr = JSON.toJSON(query).toString();
         return Hashing.md5().newHasher().putString(dataSourceStr + queryStr, Charsets.UTF_8).hash().toString();
     }
 

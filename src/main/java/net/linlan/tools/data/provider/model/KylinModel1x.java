@@ -1,6 +1,6 @@
 package net.linlan.tools.data.provider.model;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;

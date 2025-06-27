@@ -1,6 +1,6 @@
 package net.linlan.tools.board.controller;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.google.common.collect.Lists;
 import net.linlan.tools.board.dto.ViewDashDataset;
 import net.linlan.tools.board.entity.DashDataset;
@@ -9,7 +9,6 @@ import net.linlan.tools.board.service.DashFolderService;
 import net.linlan.tools.board.service.DashAdminRoleService;
 import org.apache.commons.lang3.StringUtils;
 import net.linlan.commons.core.Rcode;
-import net.linlan.commons.script.json.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -106,7 +105,7 @@ public class DashDatasetController extends BaseController {
 
     @RequestMapping("/save")
     public Rcode save(@RequestParam(name = "json") String json) {
-        JSONObject jo = JsonUtils.parseJO(json);
+        JSONObject jo = JSONObject.parseObject(json);
         DashDataset dataset = new DashDataset();
         dataset.setUserId(user.getUserId());
         dataset.setName(jo.getString("name"));
@@ -137,7 +136,7 @@ public class DashDatasetController extends BaseController {
 
     @RequestMapping("/update")
     public Rcode update(@RequestParam(name = "json") String json) {
-        JSONObject jo = JsonUtils.parseJO(json);
+        JSONObject jo = JSONObject.parseObject(json);
         DashDataset dataset = new DashDataset();
         dataset.setUserId(user.getUserId());
         dataset.setId(jo.getString("id"));
@@ -192,7 +191,7 @@ public class DashDatasetController extends BaseController {
         };
 
         datasetList.forEach(dataset -> {
-            JSONObject json = JsonUtils.parseJO(dataset.getContent());
+            JSONObject json = JSONObject.parseObject(dataset.getContent());
             JSONObject schema = json.getJSONObject("schema");
             if (schema != null) {
                 schema.getJSONArray("measure").forEach(addId);

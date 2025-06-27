@@ -1,9 +1,9 @@
 package net.linlan.tools.board.dto;
 
+import com.alibaba.fastjson2.JSONObject;
 import net.linlan.tools.board.entity.DashOperationJob;
 import net.linlan.tools.board.service.role.RolePermission;
 import org.apache.commons.collections.map.HashedMap;
-import net.linlan.commons.script.json.JsonUtils;
 
 import java.util.Date;
 import java.util.Map;
@@ -49,7 +49,7 @@ public class ViewDashOperationJob {
         this.daterange.put("startDate", job.getStartDate());
         this.daterange.put("endDate", job.getEndDate());
         this.jobType = job.getJobType();
-        this.config = JsonUtils.parseJO(job.getConfig());
+        this.config = JSONObject.parseObject(job.getConfig());
         this.lastExecTime = job.getLastExecTime();
         this.username = job.getUsername();
         this.jobStatus = job.getJobStatus();

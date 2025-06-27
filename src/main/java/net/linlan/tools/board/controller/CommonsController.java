@@ -1,7 +1,7 @@
 package net.linlan.tools.board.controller;
 
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.google.common.base.Functions;
 import com.google.common.collect.Maps;
 import com.google.common.hash.Hashing;
@@ -16,7 +16,6 @@ import net.linlan.tools.board.service.persist.excel.XlsProcessorService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import net.linlan.commons.core.CharsetUtils;
 import net.linlan.commons.core.Rcode;
-import net.linlan.commons.script.json.JsonUtils;
 import net.linlan.datas.core.provider.config.AggConfig;
 import net.linlan.datas.core.provider.result.AggregateResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,14 +58,14 @@ public class CommonsController extends BaseController {
 
     @RequestMapping("/persist")
     public Rcode persist(@RequestBody String dataStr) {
-        JSONObject data = JsonUtils.parseJO(dataStr);
+        JSONObject data = JSONObject.parseObject(dataStr);
         return dataPersistService.persistCallback(data.getString("persistId"), data.getJSONObject("data"));
     }
 
     @RequestMapping("/test")
     public Rcode test(@RequestParam(name = "datasource", required = false) String datasource, @RequestParam(name = "query", required = false) String query) {
-        JSONObject queryO = JsonUtils.parseJO(query);
-        JSONObject datasourceO = JsonUtils.parseJO(datasource);
+        JSONObject queryO = JSONObject.parseObject(query);
+        JSONObject datasourceO = JSONObject.parseObject(datasource);
         return dataProviderService.test(datasourceO, Maps.transformValues(queryO, Functions.toStringFunction()));
     }
 
@@ -118,7 +117,7 @@ public class CommonsController extends BaseController {
                                        @RequestParam(name = "reload", required = false, defaultValue = "false") boolean reload) {
         Map<String, String> strParams = null;
         if (query != null) {
-            JSONObject queryO = JsonUtils.parseJO(query);
+            JSONObject queryO = JSONObject.parseObject(query);
             strParams = Maps.transformValues(queryO, Functions.toStringFunction());
         }
         AggConfig config = null;
@@ -135,7 +134,7 @@ public class CommonsController extends BaseController {
                                          @RequestParam(name = "reload", required = false, defaultValue = "false") boolean reload) {
         Map<String, String> strParams = null;
         if (query != null) {
-            JSONObject queryO = JsonUtils.parseJO(query);
+            JSONObject queryO = JSONObject.parseObject(query);
             strParams = Maps.transformValues(queryO, Functions.toStringFunction());
         }
         return dataProviderService.getColumns(datasourceId, strParams, datasetId, reload);
@@ -149,7 +148,7 @@ public class CommonsController extends BaseController {
                                             @RequestParam(name = "reload", required = false, defaultValue = "false") boolean reload) {
         Map<String, String> strParams = null;
         if (query != null) {
-            JSONObject queryO = JsonUtils.parseJO(query);
+            JSONObject queryO = JSONObject.parseObject(query);
             strParams = Maps.transformValues(queryO, Functions.toStringFunction());
         }
         AggregateResult aggResult = null;
@@ -174,7 +173,7 @@ public class CommonsController extends BaseController {
                                      @RequestParam(name = "cfg") String cfg) {
         Map<String, String> strParams = null;
         if (query != null) {
-            JSONObject queryO = JsonUtils.parseJO(query);
+            JSONObject queryO = JSONObject.parseObject(query);
             strParams = Maps.transformValues(queryO, Functions.toStringFunction());
         }
         AggConfig config = ViewAggConfig.getAggConfig(JSONObject.parseObject(cfg, ViewAggConfig.class));
@@ -184,7 +183,7 @@ public class CommonsController extends BaseController {
 
     @RequestMapping("/tableToxls")
     public ResponseEntity<byte[]> tableToxls(@RequestParam(name = "data") String data) {
-        HSSFWorkbook wb = xlsProcessorService.tableToxls(JsonUtils.parseJO(data));
+        HSSFWorkbook wb = xlsProcessorService.tableToxls(JSONObject.parseObject(data));
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
             wb.write(out);

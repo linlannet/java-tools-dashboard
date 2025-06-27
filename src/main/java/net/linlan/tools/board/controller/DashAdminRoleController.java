@@ -1,7 +1,7 @@
 package net.linlan.tools.board.controller;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import net.linlan.tools.board.dto.ViewDashAdminRoleRes;
 import net.linlan.tools.board.entity.DashAdminRole;
 import net.linlan.tools.board.entity.DashAdminRoleRes;
@@ -10,7 +10,6 @@ import net.linlan.commons.core.RandomUtils;
 import net.linlan.commons.core.Rcode;
 import net.linlan.commons.db.query.Query;
 import net.linlan.commons.db.page.Pagination;
-import net.linlan.commons.script.json.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -113,14 +112,14 @@ public class DashAdminRoleController extends BaseController {
 
     @RequestMapping("/saveRole")
     public Rcode saveRole(@RequestParam(name = "role") String role) {
-        JSONObject json = JsonUtils.parseJO(role);
+        JSONObject json = JSONObject.parseObject(role);
         dashAdminRoleService.addRole(RandomUtils.random("R_"), json.getString("name"), json.getString("userId"));
         return Rcode.ok();
     }
 
     @RequestMapping("/updateRole")
     public Rcode updateRole(@RequestParam(name = "role") String role) {
-        JSONObject json = JsonUtils.parseJO(role);
+        JSONObject json = JSONObject.parseObject(role);
         dashAdminRoleService.updateRole(json.getString("roleId"), json.getString("roleName"), json.getString("userId"));
         return new Rcode().ok();
     }

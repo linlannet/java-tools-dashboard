@@ -1,9 +1,9 @@
 package net.linlan.tools.board.dto;
 
+import com.alibaba.fastjson2.JSONObject;
 import net.linlan.tools.board.entity.DashDatasource;
 import net.linlan.tools.board.service.role.RolePermission;
 import com.google.common.base.Function;
-import net.linlan.commons.script.json.JsonUtils;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -49,7 +49,7 @@ public class ViewDashDatasource {
         this.appId = datasource.getAppId();
         this.name = datasource.getName();
         this.type = datasource.getType();
-        this.content = JsonUtils.parseJO(datasource.getContent());
+        this.content = JSONObject.parseObject(datasource.getContent());
         this.edit = RolePermission.isEdit(datasource.getPermission());
         this.delete = RolePermission.isDelete(datasource.getPermission());
         this.realName = datasource.getRealName();

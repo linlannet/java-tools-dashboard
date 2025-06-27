@@ -1,11 +1,10 @@
 package net.linlan.tools.board.controller;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import net.linlan.tools.board.dto.ViewDashOperationJob;
 import net.linlan.tools.board.entity.DashOperationJob;
 import net.linlan.tools.board.service.job.DashOperationJobService;
 import net.linlan.commons.core.Rcode;
-import net.linlan.commons.script.json.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,7 +36,7 @@ public class DashOperationJobController extends BaseController {
 
     @RequestMapping("/save")
     public Rcode save(@RequestParam(name = "json") String json) {
-        JSONObject jo = JsonUtils.parseJO(json);
+        JSONObject jo = JSONObject.parseObject(json);
         DashOperationJob job = new DashOperationJob();
         job.setUserId(user.getUserId());
         job.setName(jo.getString("name"));
@@ -59,7 +58,7 @@ public class DashOperationJobController extends BaseController {
 
     @RequestMapping("/update")
     public Rcode update(@RequestParam(name = "json") String json) {
-        JSONObject jo = JsonUtils.parseJO(json);
+        JSONObject jo = JSONObject.parseObject(json);
         DashOperationJob job = new DashOperationJob();
         job.setId(jo.getLong("id"));
         job.setName(jo.getString("name"));

@@ -1,13 +1,12 @@
 package net.linlan.tools.board.controller;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.google.common.collect.Lists;
 import net.linlan.tools.board.dto.ViewDashFolder;
 import net.linlan.tools.board.entity.DashFolder;
 import net.linlan.tools.board.service.DashAdminRoleService;
 import net.linlan.tools.board.service.DashFolderService;
 import net.linlan.commons.core.Rcode;
-import net.linlan.commons.script.json.JsonUtils;
 import net.linlan.commons.script.json.StringMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -108,7 +107,7 @@ public class DashFolderController extends BaseController {
 //    public Rcode save(@RequestBody DashFolder dashFolder){
 //        dashFolderService.save(dashFolder);
 
-        JSONObject jo = JsonUtils.parseJO(json);
+        JSONObject jo = JSONObject.parseObject(json);
         DashFolder dashFolder = new DashFolder();
         dashFolder.setUserId(user.getUserId());
         dashFolder.setName(jo.getString("name"));
@@ -138,7 +137,7 @@ public class DashFolderController extends BaseController {
 //    public Rcode update(@RequestBody DashFolder dashFolder){
 //        dashFolderService.update(dashFolder);
 
-        JSONObject jo = JsonUtils.parseJO(json);
+        JSONObject jo = JSONObject.parseObject(json);
         DashFolder dashFolder = new DashFolder();
         dashFolder.setUserId(user.getUserId());
         dashFolder.setId(jo.getString("id"));

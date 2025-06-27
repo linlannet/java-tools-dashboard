@@ -1,9 +1,9 @@
 package net.linlan.tools.data.provider;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONPath;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.JSONPath;
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
 import org.apache.commons.collections.keyvalue.DefaultMapEntry;
@@ -29,7 +29,6 @@ import net.linlan.commons.db.annotation.DataProviderName;
 import net.linlan.commons.db.annotation.DataQueryParameter;
 import net.linlan.commons.db.annotation.DataSourceParameter;
 import net.linlan.commons.script.json.JsonBuilder;
-import net.linlan.commons.script.json.JsonUtils;
 import net.linlan.datas.core.abs.Aggregatable;
 import net.linlan.datas.core.abs.Initializing;
 import net.linlan.datas.core.provider.config.*;
@@ -233,7 +232,7 @@ public class ElasticsearchDataProvider extends DataProvider implements Aggregata
 
         String response = EntityUtils.toString(httpResponse.getEntity(), charset);
         if (httpResponse.getStatusLine().getStatusCode() == 200) {
-            return JsonUtils.parseJO(response);
+            return JSONObject.parseObject(response);
         } else {
             throw new Exception(response);
         }
@@ -243,7 +242,7 @@ public class ElasticsearchDataProvider extends DataProvider implements Aggregata
         HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
         HttpGet httpget = new HttpGet(url);
         HttpResponse response = httpClientBuilder.build().execute(httpget, getHttpContext());
-        return JsonUtils.parseJO(EntityUtils.toString(response.getEntity(), dataSource.get(CHARSET)));
+        return JSONObject.parseObject(EntityUtils.toString(response.getEntity(), dataSource.get(CHARSET)));
     }
 
     private HttpClientContext getHttpContext() {
@@ -303,7 +302,7 @@ public class ElasticsearchDataProvider extends DataProvider implements Aggregata
             }
             // Schema Override
             if (StringUtils.isNotEmpty(d.getCustom())) {
-                aggregation = JsonBuilder.json(d.getColumnName(), JsonUtils.parseJO(d.getCustom()).get("esBucket"));
+                aggregation = JsonBuilder.json(d.getColumnName(), JSONObject.parseObject(d.getCustom()).get("esBucket"));
             }
         } catch (Exception e) {
             logger.error("", e);
@@ -528,7 +527,7 @@ public class ElasticsearchDataProvider extends DataProvider implements Aggregata
                 aggregation.getJSONObject(aggregationName).put(type, new JSONObject());
                 aggregation.getJSONObject(aggregationName).getJSONObject(type).put("field", config.getColumn());
             } else {
-                JSONObject extend = JsonUtils.parseJO(config.getColumn());
+                JSONObject extend = JSONObject.parseObject(config.getColumn());
                 String column = extend.getString("column");
                 JSONObject filter = extend.getJSONObject("filter");
                 JSONObject script = extend.getJSONObject("script");
@@ -568,7 +567,7 @@ public class ElasticsearchDataProvider extends DataProvider implements Aggregata
     }
 
     private String getKey() {
-        return Hashing.md5().newHasher().putString(JSONObject.toJSON(dataSource).toString() + JSONObject.toJSON(query).toString(), Charsets.UTF_8).hash().toString();
+        return Hashing.md5().newHasher().putString(JSON.toJSON(dataSource).toString() + JSON.toJSON(query).toString(), Charsets.UTF_8).hash().toString();
     }
 
     private void getField(Map<String, String> types, Map.Entry<String, Object> field, String parent) {
@@ -601,19 +600,19 @@ public class ElasticsearchDataProvider extends DataProvider implements Aggregata
 
     private boolean isTextWithKeywordField(JSONObject property) {
         String type = property.getString("type");
-        return "text".equals(type) && JSONPath.containsValue(property, "$.fields..type", "keyword");
+        return "text".equals(type) && JSONPath.of("$.fields..type").contains(property, "keyword");
     }
 
     private boolean isTextWithoutKeywordField(JSONObject property) {
         String type = property.getString("type");
-        return "text".equals(type) && !JSONPath.containsValue(property, "$.fields..type", "keyword");
+        return "text".equals(type) && !JSONPath.of("$.fields..type").contains(property, "keyword");
     }
 
     @Override
     public String viewAggDataQuery(AggConfig ac) throws Exception {
         String format = "curl -XPOST '%s?pretty' -d '\n%s'";
         JSONObject request = getQueryAggDataRequest(ac);
-        String dsl = JSON.toJSONString(request, true);
+        String dsl = JSON.toJSONString(request);
         return String.format(format, getSearchUrl(request), dsl);
     }
 
@@ -621,7 +620,7 @@ public class ElasticsearchDataProvider extends DataProvider implements Aggregata
     @Override
     public void afterPropertiesSet() throws Exception {
         if (StringUtils.isNotBlank(query.get(OVERRIDE))) {
-            overrideAggregations = JsonUtils.parseJO(query.get(OVERRIDE));
+            overrideAggregations = JSONObject.parseObject(query.get(OVERRIDE));
         }
     }
 

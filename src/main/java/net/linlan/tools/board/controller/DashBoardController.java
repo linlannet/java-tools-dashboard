@@ -1,13 +1,12 @@
 package net.linlan.tools.board.controller;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.google.common.collect.Lists;
 import net.linlan.tools.board.dto.ViewDashBoard;
 import net.linlan.tools.board.entity.DashBoard;
 import net.linlan.tools.board.entity.DashBoardParam;
 import net.linlan.tools.board.service.DashBoardService;
 import net.linlan.commons.core.Rcode;
-import net.linlan.commons.script.json.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -51,7 +50,7 @@ public class DashBoardController extends BaseController {
 
     @RequestMapping("/save")
     public Rcode save(@RequestParam(name = "json") String json) {
-        JSONObject jo = JsonUtils.parseJO(json);
+        JSONObject jo = JSONObject.parseObject(json);
         DashBoard board = new DashBoard();
         board.setUserId(user.getUserId());
         board.setName(jo.getString("name"));
@@ -74,7 +73,7 @@ public class DashBoardController extends BaseController {
 
     @RequestMapping("/update")
     public Rcode update(@RequestParam(name = "json") String json) {
-        JSONObject jo = JsonUtils.parseJO(json);
+        JSONObject jo = JSONObject.parseObject(json);
         DashBoard board = new DashBoard();
         board.setId(jo.getString("id"));
         board.setUserId(user.getUserId());
@@ -147,7 +146,7 @@ public class DashBoardController extends BaseController {
 
     @RequestMapping("/saveData")
     public Rcode saveData(@RequestParam(name = "json") String json) {
-        JSONObject jo = JsonUtils.parseJO(json);
+        JSONObject jo = JSONObject.parseObject(json);
         DashBoard board = new DashBoard();
         board.setUserId(user.getUserId());
         board.setName(jo.getString("name"));

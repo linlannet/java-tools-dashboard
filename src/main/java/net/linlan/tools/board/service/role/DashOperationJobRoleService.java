@@ -1,12 +1,11 @@
 package net.linlan.tools.board.service.role;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import net.linlan.tools.board.service.AuthService;
 import net.linlan.tools.board.service.job.DashOperationJobService;
 import net.linlan.commons.core.Rcode;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
-import net.linlan.commons.script.json.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -34,7 +33,7 @@ public class DashOperationJobRoleService {
     @Around("execution(* net.linlan.tools.board.service.job.DashOperationJobService.update(..))")
     public Object update(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         String json = (String) proceedingJoinPoint.getArgs()[1];
-        JSONObject jo = JsonUtils.parseJO(json);
+        JSONObject jo = JSONObject.parseObject(json);
         String userId = authService.getCurrentUser().getUserId();
         if (dashboardJobService.checkJobRole(userId, jo.getLong("id"), RolePermission.PATTERN_EDIT) > 0) {
             Object value = proceedingJoinPoint.proceed();

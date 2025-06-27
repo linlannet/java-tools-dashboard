@@ -1,14 +1,13 @@
 package net.linlan.tools.board.service.persist.excel;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import net.linlan.tools.board.dao.DashBoardDao;
 import net.linlan.tools.board.entity.DashBoard;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import net.linlan.tools.board.service.persist.PersistContext;
-import net.linlan.commons.script.json.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -72,7 +71,7 @@ public class XlsProcessorService {
 
     private XlsProcessor dashboardToXls(PersistContext persistContext, XlsProcessor context) {
         DashBoard board = dashBoardDao.findById(persistContext.getDashboardId());
-        JSONArray rows = JsonUtils.parseJO(board.getLayout()).getJSONArray("rows");
+        JSONArray rows = JSONObject.parseObject(board.getLayout()).getJSONArray("rows");
         List<JSONArray> widgetRows = rows.stream().map(row -> (JSONObject) row)
                 .filter(row -> row.getString("type") == null || "widget".equals(row.getString("type")))
                 .map(row -> {

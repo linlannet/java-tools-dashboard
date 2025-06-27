@@ -1,10 +1,9 @@
 package net.linlan.tools.data.provider.model;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import net.linlan.tools.data.provider.KylinDataProvider;
 import org.apache.commons.collections.map.HashedMap;
 import net.linlan.commons.core.CoreException;
-import net.linlan.commons.script.json.JsonUtils;
 import net.linlan.datas.core.utils.TableMap;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
@@ -77,7 +76,7 @@ public abstract class KylinBaseModel implements Serializable {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));
         ResponseEntity<String> a = getTableInfoRest(restTemplate, table);
-        JSONObject json = JsonUtils.parseJO(a.getBody());
+        JSONObject json = JSONObject.parseObject(a.getBody());
         Map<String, String> result = new HashedMap();
         json.getJSONArray("columns").stream().map(e -> (JSONObject) e).forEach(e -> result.put(e.getString("name"), e.getString("datatype")));
         return result;

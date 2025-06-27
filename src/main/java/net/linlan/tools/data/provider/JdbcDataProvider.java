@@ -2,7 +2,8 @@ package net.linlan.tools.data.provider;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.google.common.base.Charsets;
 import com.google.common.base.Stopwatch;
 import com.google.common.hash.Hashing;
@@ -191,7 +192,7 @@ public class JdbcDataProvider extends DataProvider implements Aggregatable, Init
         String password = dataSource.get(PASSWORD);
         Connection conn = null;
         if (usePool != null && "true".equals(usePool)) {
-            String key = Hashing.md5().newHasher().putString(JSONObject.toJSON(dataSource).toString(), Charsets.UTF_8).hash().toString();
+            String key = Hashing.md5().newHasher().putString(JSON.toJSON(dataSource).toString(), Charsets.UTF_8).hash().toString();
             DataSource ds = datasourceMap.get(key);
             if (ds == null) {
                 synchronized (key.intern()) {

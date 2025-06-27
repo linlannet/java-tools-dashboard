@@ -1,6 +1,6 @@
 package net.linlan.tools.data.provider.model;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import net.linlan.tools.data.provider.KylinDataProvider;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.ResponseEntity;

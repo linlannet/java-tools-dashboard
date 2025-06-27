@@ -1,6 +1,6 @@
 package net.linlan.tools.board.service;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import net.linlan.tools.board.entity.DashAdminRoleRes;
 import net.linlan.commons.core.Rcode;
 import net.linlan.tools.board.dao.DashAdminRoleDao;

@@ -1,7 +1,8 @@
 package net.linlan.tools.board.service;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import net.linlan.tools.board.dao.DashBoardDao;
 import net.linlan.tools.board.dto.ViewDashBoard;
 import net.linlan.tools.board.dto.ViewDashWidget;
@@ -11,7 +12,6 @@ import net.linlan.tools.board.entity.DashWidget;
 import net.linlan.tools.board.service.persist.excel.XlsProcessorService;
 import net.linlan.tools.board.service.persist.PersistContext;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import net.linlan.commons.script.json.JsonUtils;
 import net.linlan.commons.script.json.StringMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,7 +104,7 @@ public class DashBoardService {
 
     public ViewDashBoard getBoardData(String id) {
         DashBoard board = dao.findById(id);
-        JSONObject layout = JsonUtils.parseJO(board.getLayout());
+        JSONObject layout = JSONObject.parseObject(board.getLayout());
         JSONArray rows = layout.getJSONArray("rows");
         for (Object row : rows) {
             JSONObject o = (JSONObject) row;
@@ -117,9 +117,9 @@ public class DashBoardService {
                 JSONObject ww = (JSONObject) w;
                 String widgetId = ww.getString("widgetId");
                 DashWidget widget = dashWidgetService.findById(widgetId);
-                JSONObject dataJson = JsonUtils.parseJO(widget.getContent());
+                JSONObject dataJson = JSONObject.parseObject(widget.getContent());
                 //DataProviderResult data = dataProviderService.getData(dataJson.getString("datasource"), Maps.transformValues(dataJson.getJSONObject("query"), Functions.toStringFunction()));
-                JSONObject widgetJson = (JSONObject) JSONObject.toJSON(new ViewDashWidget(widget));
+                JSONObject widgetJson = (JSONObject) JSON.toJSON(new ViewDashWidget(widget));
                 //widgetJson.put("queryData", data.getContent());
                 ww.put("widget", widgetJson);
                 ww.put("show", false);

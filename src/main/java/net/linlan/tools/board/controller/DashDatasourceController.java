@@ -1,11 +1,10 @@
 package net.linlan.tools.board.controller;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import net.linlan.tools.board.dto.ViewDashDatasource;
 import net.linlan.tools.board.entity.DashDatasource;
 import net.linlan.tools.board.service.DashDatasourceService;
 import net.linlan.commons.core.Rcode;
-import net.linlan.commons.script.json.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,7 +49,7 @@ public class DashDatasourceController extends BaseController {
 
     @RequestMapping("/save")
     public Rcode save(@RequestParam(name = "json") String json) {
-        JSONObject jo = JsonUtils.parseJO(json);
+        JSONObject jo = JSONObject.parseObject(json);
         DashDatasource datasource = new DashDatasource();
         datasource.setUserId(user.getUserId());
         datasource.setName(jo.getString("name"));
@@ -70,7 +69,7 @@ public class DashDatasourceController extends BaseController {
 
     @RequestMapping("/update")
     public Rcode update(@RequestParam(name = "json") String json) {
-        JSONObject jo = JsonUtils.parseJO(json);
+        JSONObject jo = JSONObject.parseObject(json);
         DashDatasource datasource = new DashDatasource();
         datasource.setUserId(user.getUserId());
         datasource.setName(jo.getString("name"));

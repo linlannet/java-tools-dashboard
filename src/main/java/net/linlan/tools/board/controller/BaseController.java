@@ -1,7 +1,7 @@
 package net.linlan.tools.board.controller;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONPath;
+import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.JSONPath;
 import net.linlan.tools.board.dto.BaseControllerLog;
 import net.linlan.tools.security.User;
 import org.apache.commons.lang.StringUtils;
@@ -62,7 +62,8 @@ public class BaseController {
             return;
         }
         String group = object.getString("group");
-        String id = (String) JSONPath.eval(dataset, "$.filters[group='" + group + "'][0].id");
+        String id = (String) JSONPath.eval(dataset, "$.filters[?(@.group='" + group + "')][0].id");
+//        String id = (String) JSONPath.eval(dataset, "$.filters[group='" + group + "'][0].id");
         if (id != null) {
             object.put("id", id);
         }
@@ -77,7 +78,8 @@ public class BaseController {
             return;
         }
         String alias = object.getString("alias");
-        String id = (String) JSONPath.eval(dataset, "$.expressions[alias='" + alias + "'][type='exp'][0].id");
+        String id = (String) JSONPath.eval(dataset, "$.expressions[?(@.alias='" + alias + "')][?(@.type='exp')][0].id");
+//        String id = (String) JSONPath.eval(dataset, "$.expressions[alias='" + alias + "'][type='exp'][0].id");
         if (id != null) {
             object.put("id", id);
         }
@@ -96,20 +98,25 @@ public class BaseController {
 
         String path = "$.dimension";
         if (org.apache.commons.lang3.StringUtils.isNotEmpty(alias)) {
-            path += "[alias='" + alias + "']";
+            path += "[?(@.alias='" + alias + "')]";
+//            path += "[alias='" + alias + "']";
         }
         if (org.apache.commons.lang3.StringUtils.isNotEmpty(column)) {
-            path += "[column='" + column + "']";
+            path += "[?(@.column='" + column + "')]";
+//            path += "[column='" + column + "']";
         }
         path += "[0].id";
         String id = (String) JSONPath.eval(dataset.getJSONObject("schema"), path);
         if (id == null) {
-            path = "$.dimension[type='level'].columns";
+            path = "$.dimension[?(@.type='level')].columns";
+//            path = "$.dimension[type='level'].columns";
             if (org.apache.commons.lang3.StringUtils.isNotEmpty(alias)) {
-                path += "[alias='" + alias + "']";
+                path += "[?(@.alias='" + alias + "')]";
+//                path += "[alias='" + alias + "']";
             }
             if (org.apache.commons.lang3.StringUtils.isNotEmpty(column)) {
-                path += "[column='" + column + "']";
+                path += "[?(@.column='" + column + "')]";
+//                path += "[column='" + column + "']";
             }
             path += "[0].id";
             id = (String) JSONPath.eval(dataset.getJSONObject("schema"), path);
