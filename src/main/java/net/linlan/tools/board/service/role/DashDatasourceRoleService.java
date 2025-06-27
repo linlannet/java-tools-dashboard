@@ -34,7 +34,7 @@ public class DashDatasourceRoleService {
     @Around("execution(* net.linlan.tools.board.service.DashDatasourceService.updates(..))")
     public Object update(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
 //        String json = (String) proceedingJoinPoint.getArgs()[0];
-//        JSONObject json = JsonUtils.parseJO(json);
+//        JSONObject json = JSONObject.parseObject(json);
         DashDatasource db = (DashDatasource)proceedingJoinPoint.getArgs()[0];
         String userId = authService.getCurrentUser().getUserId();
         if (dashDatasourceService.checkDatasourceRole(userId, db.getId(), RolePermission.PATTERN_EDIT) > 0) {

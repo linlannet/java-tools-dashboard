@@ -1,9 +1,9 @@
 package net.linlan.tools.board.dto;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.google.common.base.Function;
 import net.linlan.tools.board.entity.DashDataset;
 import net.linlan.tools.board.service.role.RolePermission;
-import net.linlan.commons.script.json.JsonUtils;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -56,7 +56,7 @@ public class ViewDashDataset {
         this.datasourceId = dataset.getDatasourceId();
         this.name = dataset.getName();
         this.cataName = dataset.getCataName();
-        this.content = JsonUtils.parseJO(dataset.getContent());
+        this.content = JSONObject.parseObject(dataset.getContent());
         this.realName = dataset.getRealName();
         this.username = dataset.getUsername();
         this.createTime = dataset.getCreateTime().toString();

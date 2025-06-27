@@ -1,6 +1,6 @@
 package net.linlan.tools.board.controller;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.google.common.collect.Lists;
 import net.linlan.tools.board.dto.ViewDashWidget;
 import net.linlan.tools.board.entity.DashDataset;
@@ -11,7 +11,6 @@ import net.linlan.tools.board.service.DashWidgetService;
 import net.linlan.tools.board.service.role.RolePermission;
 import org.apache.commons.lang3.StringUtils;
 import net.linlan.commons.core.Rcode;
-import net.linlan.commons.script.json.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -91,7 +90,7 @@ public class DashWidgetController extends BaseController {
      */
     @RequestMapping("/save")
     public Rcode saveNewWidget(@RequestParam(name = "json") String json) {
-        JSONObject jo = JsonUtils.parseJO(json);
+        JSONObject jo = JSONObject.parseObject(json);
         DashWidget widget = new DashWidget();
         widget.setUserId(user.getUserId());
         widget.setName(jo.getString("name"));
@@ -101,7 +100,7 @@ public class DashWidgetController extends BaseController {
 
         // 添加 datasourceId 和 datasetId ; add on 20201023
         if (StringUtils.isNotBlank(widget.getContent())) {
-            JSONObject joContent = JsonUtils.parseJO(widget.getContent());
+            JSONObject joContent = JSONObject.parseObject(widget.getContent());
             widget.setDatasourceId(joContent.getString("datasource"));
             widget.setDatasetId(joContent.getString("datasetId"));
         }
@@ -134,7 +133,7 @@ public class DashWidgetController extends BaseController {
      */
     @RequestMapping("/update")
     public Rcode updateWidget(@RequestParam(name = "json") String json) {
-        JSONObject jo = JsonUtils.parseJO(json);
+        JSONObject jo = JSONObject.parseObject(json);
         DashWidget widget = new DashWidget();
         widget.setUserId(user.getUserId());
         widget.setId(jo.getString("id"));
@@ -145,7 +144,7 @@ public class DashWidgetController extends BaseController {
 
         // 更新 datasourceId 和 datasetId ; add by 20201023
         if (StringUtils.isNotBlank(widget.getContent())) {
-            JSONObject joContent = JsonUtils.parseJO(widget.getContent());
+            JSONObject joContent = JSONObject.parseObject(widget.getContent());
             widget.setDatasourceId(joContent.getString("datasource"));
             widget.setDatasetId(joContent.getString("datasetId"));
         }
@@ -217,11 +216,11 @@ public class DashWidgetController extends BaseController {
         params.put("userId", user.getUserId());
         List<DashWidget> widgetList = dashWidgetService.getList(params);
         widgetList.forEach(widget -> {
-            String datasetId = JsonUtils.parseJO(widget.getContent()).getString("datasetId");
+            String datasetId = JSONObject.parseObject(widget.getContent()).getString("datasetId");
             DashDataset dataset = dashDatasetService.findById(datasetId);
             if (dataset != null) {
-                JSONObject _dataset = JsonUtils.parseJO(dataset.getContent());
-                JSONObject data = JsonUtils.parseJO(widget.getContent());
+                JSONObject _dataset = JSONObject.parseObject(dataset.getContent());
+                JSONObject data = JSONObject.parseObject(widget.getContent());
                 JSONObject content = data.getJSONObject("content");
                 if (content.containsKey("keys")) {
                     content.getJSONArray("keys").forEach(k -> addDimensionId(_dataset, k));

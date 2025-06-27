@@ -1,5 +1,5 @@
 # java-tools-dashboard
-JAVA代码数据驾驶舱应用，可通过JDBC、SOLR、ELASTIC等数据源，创建数据集，分析数据图表，生产数据看板
+数据驾驶舱应用，可通过JDBC、SOLR、ELASTIC等数据源，创建数据集，分析数据图表，生成数据看板，支持echarts、bmap地图，直观选择图表动态渲染数据
 
 ## 项目说明
 ```
@@ -14,6 +14,8 @@ JAVA代码数据驾驶舱应用，可通过JDBC、SOLR、ELASTIC等数据源，�
 ## 版本历史
 
 ```
+2.3.3       2025-06-02  fastjson升级为fastjson2
+
 2.3.2       2025-03-03  调整资源的路径从io.linlan调整为net.linlan
 
 2.3.1       2024-09-20  增加数据库包含注释版本的脚本，目标调整为sql

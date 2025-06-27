@@ -1,8 +1,7 @@
 package net.linlan.tools.data.provider.model;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import net.linlan.tools.data.provider.KylinDataProvider;
-import net.linlan.commons.script.json.JsonUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.web.client.RestTemplate;
@@ -24,7 +23,7 @@ public class KylinModelFactory {
         restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));
         ResponseEntity<String> restful = restTemplate.getForEntity(
                 "http://" + serverIp + "/kylin/api/model/{modelName}", String.class, modelName);
-        JSONObject modelJson = JsonUtils.parseJO(restful.getBody());
+        JSONObject modelJson = JSONObject.parseObject(restful.getBody());
 
         String kylinVersion = modelJson.getString("version");
         String[] kvs = kylinVersion.split("\\.");

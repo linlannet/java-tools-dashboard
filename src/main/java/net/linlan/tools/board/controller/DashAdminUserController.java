@@ -1,7 +1,7 @@
 package net.linlan.tools.board.controller;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.google.common.collect.Lists;
 import net.linlan.tools.board.dto.ViewDashBoard;
 import net.linlan.tools.board.dto.ViewDashWidget;
@@ -13,7 +13,6 @@ import net.linlan.tools.board.service.role.RolePermission;
 import net.linlan.commons.core.Rcode;
 import net.linlan.commons.db.query.Query;
 import net.linlan.commons.db.page.Pagination;
-import net.linlan.commons.script.json.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -114,14 +113,14 @@ public class DashAdminUserController extends BaseController {
 
     @RequestMapping("/saveNewUser")
     public Rcode saveNewUser(@RequestParam(name = "user") String user) {
-        JSONObject json = JsonUtils.parseJO(user);
+        JSONObject json = JSONObject.parseObject(user);
         dashAdminUserService.addUser(UUID.randomUUID().toString(), json.getString("username"), json.getString("name"), json.getString("password"));
         return new Rcode().ok();
     }
 
     @RequestMapping("/updateUser")
     public Rcode updateUser(@RequestParam(name = "user") String user) {
-        JSONObject json = JsonUtils.parseJO(user);
+        JSONObject json = JSONObject.parseObject(user);
         dashAdminUserService.updateUser(json.getString("id"), json.getString("username"), json.getString("name"), json.getString("password"));
         return new Rcode().ok();
     }

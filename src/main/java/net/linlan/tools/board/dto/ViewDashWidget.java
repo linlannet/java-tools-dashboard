@@ -1,9 +1,9 @@
 package net.linlan.tools.board.dto;
 
+import com.alibaba.fastjson2.JSONObject;
 import net.linlan.tools.board.entity.DashWidget;
 import com.google.common.base.Function;
 import net.linlan.tools.board.service.role.RolePermission;
-import net.linlan.commons.script.json.JsonUtils;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -60,7 +60,7 @@ public class ViewDashWidget {
         this.username = widget.getUsername();
         this.createTime = widget.getCreateTime().toString();
         this.lastTime = widget.getLastTime().toString();
-        this.content = JsonUtils.parseJO(widget.getContent());
+        this.content = JSONObject.parseObject(widget.getContent());
         this.description = widget.getDescription();
         this.edit = RolePermission.isEdit(widget.getPermission());
         this.delete = RolePermission.isDelete(widget.getPermission());

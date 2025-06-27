@@ -1,6 +1,6 @@
 package net.linlan.tools.board.service.role;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import net.linlan.tools.board.entity.DashDataset;
 import net.linlan.tools.board.service.AuthService;
 import net.linlan.tools.board.service.DashDatasetService;
@@ -8,7 +8,6 @@ import net.linlan.tools.board.service.DashFolderService;
 import net.linlan.commons.core.Rcode;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
-import net.linlan.commons.script.json.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -40,7 +39,7 @@ public class DashDatasetRoleService {
     @Around("execution(* net.linlan.tools.board.service.DashDatasetService.update(..))")
     public Object update(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         String json = (String) proceedingJoinPoint.getArgs()[1];
-        JSONObject jo = JsonUtils.parseJO(json);
+        JSONObject jo = JSONObject.parseObject(json);
         String userId = authService.getCurrentUser().getUserId();
         if ((dashDatasetService.checkDatasetRole(userId, jo.getString("id"), RolePermission.PATTERN_EDIT) > 0)
                 || dashFolderService.checkFolderAuth(userId, jo.getString("folderId"))) {

@@ -1,14 +1,13 @@
 package net.linlan.tools.data.provider;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.google.common.base.Joiner;
 import net.linlan.commons.core.NumberUtils;
 import net.linlan.commons.core.RandomUtils;
 import net.linlan.commons.db.annotation.DataProviderName;
 import net.linlan.commons.db.annotation.DataQueryParameter;
 import net.linlan.commons.db.annotation.DataSourceParameter;
-import net.linlan.commons.script.json.JsonUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -63,7 +62,7 @@ public class SaikuDataProvider extends DataProvider {
         String uuid = RandomUtils.UUID();
         restTemplate.exchange(serverIp + "/saiku/rest/saiku/api/query/{id}?file={file}&formatter={formatter}&type={type}", HttpMethod.POST, new HttpEntity<>(headers), String.class, uuid, file, "flattened", "QM");
         a = restTemplate.exchange(serverIp + "/saiku/rest/saiku/api/query/{id}/result/flattened", HttpMethod.GET, new HttpEntity<>(headers), String.class, uuid);
-        JSONObject json = JsonUtils.parseJO(new String(a.getBody().getBytes("ISO8859-1"), "UTF-8"));
+        JSONObject json = JSONObject.parseObject(new String(a.getBody().getBytes("ISO8859-1"), "UTF-8"));
         JSONArray array = json.getJSONArray("cellset");
 
         String[] columnHeader = new String[json.getInteger("width")];

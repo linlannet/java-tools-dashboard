@@ -1,6 +1,6 @@
 package net.linlan.tools.board.service;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import net.linlan.tools.board.dao.DashBoardDao;
 import net.linlan.commons.core.CoreException;
 import net.linlan.tools.security.service.LocalSecurityFilter;

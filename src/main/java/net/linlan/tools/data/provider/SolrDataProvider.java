@@ -1,6 +1,7 @@
 package net.linlan.tools.data.provider;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
 import net.linlan.config.SolrServerPoolFactory;
@@ -169,7 +170,7 @@ public class SolrDataProvider extends DataProvider implements Aggregatable, Init
     }
 
     private String getCacheKey() {
-        return Hashing.md5().newHasher().putString(JSONObject.toJSON(dataSource).toString() + JSONObject.toJSON(query).toString(), Charsets.UTF_8).hash().toString();
+        return Hashing.md5().newHasher().putString(JSON.toJSON(dataSource).toString() + JSON.toJSON(query).toString(), Charsets.UTF_8).hash().toString();
     }
 
     private SolrClient getSolrServer(String solrServers, String collectionName) {

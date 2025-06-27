@@ -1,7 +1,8 @@
 package net.linlan.tools.board.service.role;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import net.linlan.tools.board.entity.DashAdminRole;
@@ -188,7 +189,7 @@ public class ConfigRuleService {
                         return false;
                 }
             }).collect(Collectors.toList());
-            args[1] = JSONArray.toJSON(filtered).toString();
+            args[1] = JSON.toJSON(filtered).toString();
             return proceedingJoinPoint.proceed(args);
         }
     }

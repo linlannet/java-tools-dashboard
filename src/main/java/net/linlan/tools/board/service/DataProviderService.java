@@ -1,7 +1,7 @@
 package net.linlan.tools.board.service;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONPath;
+import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.JSONPath;
 import com.google.common.base.Functions;
 import com.google.common.collect.Maps;
 import net.linlan.tools.data.provider.DataProvider;
@@ -11,7 +11,6 @@ import net.linlan.tools.board.entity.DashDatasource;
 import org.apache.commons.lang3.StringUtils;
 import net.linlan.commons.core.CoreException;
 import net.linlan.commons.core.Rcode;
-import net.linlan.commons.script.json.JsonUtils;
 import net.linlan.datas.core.provider.config.AggConfig;
 import net.linlan.datas.core.provider.config.DimensionConfig;
 import net.linlan.datas.core.provider.result.AggregateResult;
@@ -48,7 +47,7 @@ public class DataProviderService {
             query = dataset.getQuery();
         }
         DashDatasource datasource = dashDatasourceService.findById(datasourceId);
-        JSONObject datasourceConfig = JsonUtils.parseJO(datasource.getContent());
+        JSONObject datasourceConfig = JSONObject.parseObject(datasource.getContent());
         Map<String, String> dataSource = Maps.transformValues(datasourceConfig, Functions.toStringFunction());
         DataProvider dataProvider = DataProviderManager.getDataProvider(datasource.getType(), dataSource, query);
         if (dataset != null && dataset.getInterval() != null && dataset.getInterval() > 0) {
@@ -59,7 +58,7 @@ public class DataProviderService {
 
     public Map<String, String> getDataSource(String datasourceId) {
         DashDatasource datasource = dashDatasourceService.findById(datasourceId);
-        JSONObject datasourceConfig = JsonUtils.parseJO(datasource.getContent());
+        JSONObject datasourceConfig = JSONObject.parseObject(datasource.getContent());
         return Maps.transformValues(datasourceConfig, Functions.toStringFunction());
     }
 
@@ -173,9 +172,12 @@ public class DataProviderService {
         }
         Consumer<DimensionConfig> predicate = (config) -> {
             if (StringUtils.isNotEmpty(config.getId())) {
-                String custom = (String) JSONPath.eval(dataset.getSchema(), "$.dimension[id='" + config.getId() + "'][0].custom");
+                String custom = (String) JSONPath.eval(dataset.getSchema(), "$.dimension[?(@.id == '" + config.getId() + "')].custom");
+
+//                String custom = (String) JSONPath.eval(dataset.getSchema(), "$.dimension[id='" + config.getId() + "'][0].custom");
                 if (custom == null) {
-                    custom = (String) JSONPath.eval(dataset.getSchema(), "$.dimension[type='level'].columns[id='" + config.getId() + "'][0].custom");
+                    custom = (String) JSONPath.eval(dataset.getSchema(), "$.dimension[?(@.type == 'level')].columns[?(@.id == '" + config.getId() + "')][0].custom");
+//                    custom = (String) JSONPath.eval(dataset.getSchema(), "$.dimension[type='level'].columns[id='" + config.getId() + "'][0].custom");
                 }
                 config.setCustom(custom);
             }
@@ -198,7 +200,7 @@ public class DataProviderService {
         private JSONObject schema;
 
         public Dataset(DashDataset dataset) {
-            JSONObject data = JsonUtils.parseJO(dataset.getContent());
+            JSONObject data = JSONObject.parseObject(dataset.getContent());
             this.query = Maps.transformValues(data.getJSONObject("query"), Functions.toStringFunction());
             this.datasourceId = data.getString("datasource");
             this.interval = data.getLong("interval");

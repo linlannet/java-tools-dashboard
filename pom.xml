@@ -3,10 +3,10 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.linlan.tools</groupId>
     <artifactId>java-tools-dashboard</artifactId>
-    <version>2.3.1</version>
+    <version>2.3.3</version>
     <packaging>war</packaging>
     <name>java-tools-dashboard</name>
-    <description/>
+    <description>数据驾驶舱应用，可通过JDBC、SOLR、ELASTIC等数据源，创建数据集，分析数据图表，生成数据看板，支持echarts、bmap地图，直观选择图表动态渲染数据</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
@@ -30,16 +30,39 @@
 
         <tomcat.version>8.5.28</tomcat.version>
 
-        <fastjson.version>1.2.83</fastjson.version>
+        <fastjson2.version>2.0.43</fastjson2.version>
         <solr.version>8.2.0</solr.version>
         <aspectj.version>1.8.13</aspectj.version>
         <guava.version>18.0</guava.version>
         <dbcp2.version>2.1.1</dbcp2.version>
 
-        <linlan.commons.version>2.6.0</linlan.commons.version>
+        <linlan.commons.version>2.6.6</linlan.commons.version>
 
     </properties>
-
+    <url>https://gitee.com/linlannet/java-tools-dashboard.git</url>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://gitee.com/linlannet/java-tools-dashboard</url>
+        <connection>scm:git:git://gitee.com/linlannet/java-tools-dashboard.git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>linlan</id>
+            <name>linlan info</name>
+            <email>linlannet@163.com</email>
+            <organization>Linlan Corporation</organization>
+            <url>https://gitee.com/linlaninfo</url>
+            <roles>
+                <role>Member</role>
+            </roles>
+            <timezone>Asia/Beijing</timezone>
+        </developer>
+    </developers>
 
     <dependencies>
 
@@ -134,9 +157,9 @@
             <version>${slf4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>${fastjson.version}</version>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <version>${fastjson2.version}</version>
         </dependency>
 
         <!-- apache 公共资源包 -->

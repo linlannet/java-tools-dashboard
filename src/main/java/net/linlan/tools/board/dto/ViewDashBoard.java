@@ -1,9 +1,9 @@
 package net.linlan.tools.board.dto;
 
+import com.alibaba.fastjson2.JSONObject;
 import net.linlan.tools.board.service.role.RolePermission;
 import net.linlan.tools.board.entity.DashBoard;
 import com.google.common.base.Function;
-import net.linlan.commons.script.json.JsonUtils;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -59,7 +59,7 @@ public class ViewDashBoard {
         this.folderIsPrivate = board.getFolderIsPrivate();
         this.createTime = board.getCreateTime() != null ? board.getCreateTime().toString() : "" ;
         this.lastTime = board.getLastTime() != null ? board.getLastTime().toString() : "";
-        this.layout = JsonUtils.parseJO(board.getLayout());
+        this.layout = JSONObject.parseObject(board.getLayout());
         this.cataName = board.getCataName();
         this.edit = RolePermission.isEdit(board.getPermission());
         this.delete = RolePermission.isDelete(board.getPermission());
